@@ -30,6 +30,7 @@ public class AGuildFisher extends Script {
 	private BufferedImage clockImage;
 	private Thread fishingHoleMonitor;
 	private Runnable fishingHole;
+	private int regularHarpoon = 311;
 	
 	public class FishingHole implements Runnable {
 		public void run() {
@@ -66,7 +67,7 @@ public class AGuildFisher extends Script {
 				
 				return 2000;
 			} else {
-				bank.depositAll();
+				bank.depositAllExcept(regularHarpoon);
 				
 				return 2000;
 			}
