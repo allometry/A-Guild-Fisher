@@ -25,25 +25,43 @@ public class AGuildFisher extends Script {
 	private Area guildBank = new Area(new Location(2587, 3424), new Location(2585, 3420));
 	private Location[] northDockPath = { new Location(2586, 3422), new Location(2591, 3420), new Location(2596, 3420), new Location(2599, 3422) };
 	private NPC currentFishingArea = null;
-	private long startTime;
+	private long startTime, failsafeTime = 0;
 	private BufferedImage basketImage;
 	private BufferedImage clockImage;
 	private Thread fishingHoleMonitor;
 	private Runnable fishingHole;
 	private int regularHarpoon = 311;
+	private boolean runThread = true;
 	
 	public class FishingHole implements Runnable {
 		public void run() {
-			while(true) {
+			while(runThread) {
 				if(players.getCurrent().isInArea(northDock)) {
 					if(currentFishingArea == null)
 						currentFishingArea = npcs.getNearestByID(npcShark);
 					
 					if(npcs.getAt(currentFishingArea.getLocation()) == null)
-						if(npcs.getAt(currentFishingArea.getLocation()).getID() != npcShark)
+						currentFishingArea = npcs.getNearestByID(npcShark);
+					
+					if(npcs.getAt(currentFishingArea.getLocation()).getID() != npcShark)
+						currentFishingArea = npcs.getNearestByID(npcShark);
+					
+					if(players.getCurrent().getAnimation() == -1 && !players.getCurrent().isMoving()) {
+						if(failsafeTime == 0) {
+							failsafeTime = System.currentTimeMillis() + 15000;
+						}
+						
+						if(System.currentTimeMillis() > failsafeTime) {
 							currentFishingArea = npcs.getNearestByID(npcShark);
+							failsafeTime = 0;
+						}
+					} else {
+						failsafeTime = 0;
+					}
 				}
 			}
+			
+			log("Fishing Hole Monitor Thread Stopping...");
 		}
 	}
 	
@@ -101,6 +119,9 @@ public class AGuildFisher extends Script {
 	
 	@Override
 	public void onStop() {
+		runThread = false;
+		log("Stopping Allometry Guild Fisher...");
+		
 		return ;
 	}
 	
