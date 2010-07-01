@@ -39,8 +39,9 @@ public class AGuildFisher extends Script {
 					if(currentFishingArea == null)
 						currentFishingArea = npcs.getNearestByID(npcShark);
 					
-					if(npcs.getAt(currentFishingArea.getLocation()) == null || npcs.getAt(currentFishingArea.getLocation()).getID() != npcShark)
-						currentFishingArea = npcs.getNearestByID(npcShark);
+					if(npcs.getAt(currentFishingArea.getLocation()) == null)
+						if(npcs.getAt(currentFishingArea.getLocation()).getID() != npcShark)
+							currentFishingArea = npcs.getNearestByID(npcShark);
 				}
 			}
 		}
