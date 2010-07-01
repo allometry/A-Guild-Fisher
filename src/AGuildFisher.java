@@ -25,27 +25,21 @@ public class AGuildFisher extends Script {
 	private Area guildBank = new Area(new Location(2587, 3424), new Location(2585, 3420));
 	private Location[] northDockPath = { new Location(2586, 3422), new Location(2591, 3420), new Location(2596, 3420), new Location(2599, 3422) };
 	private NPC currentFishingArea = null;
-	private FishingHole fishingHole;
-	private Thread fishingHoleMonitor;
 	private long startTime;
 	private BufferedImage basketImage;
 	private BufferedImage clockImage;
+	private Thread fishingHoleMonitor;
+	private Runnable fishingHole;
 	
-	public class FishingHole implements Runnable {		
+	public class FishingHole implements Runnable {
 		public void run() {
-			if(players.getCurrent().isInArea(northDock)) {
-				try {
-					if(currentFishingArea == null) {
-						log("Looking for fishing hole...");
+			while(true) {
+				if(players.getCurrent().isInArea(northDock)) {
+					if(currentFishingArea == null)
 						currentFishingArea = npcs.getNearestByID(npcShark);
-					}
 					
-					if(npcs.getAt(currentFishingArea.getLocation()) == null) {
-						log("Looking for new fishing hole...");
+					if(npcs.getAt(currentFishingArea.getLocation()) == null)
 						currentFishingArea = npcs.getNearestByID(npcShark);
-					}
-				} catch(Exception e) {
-					logStackTrace(e);
 				}
 			}
 		}
@@ -98,7 +92,9 @@ public class AGuildFisher extends Script {
 		}
 		
 		fishingHole = new FishingHole();
+		
 		fishingHoleMonitor = new Thread(fishingHole);
+		fishingHoleMonitor.start();
 	}
 	
 	@Override
