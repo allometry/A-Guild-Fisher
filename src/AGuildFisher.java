@@ -20,7 +20,7 @@ import com.quirlion.script.types.NPC;
 import com.quirlion.script.types.Thing;
 
 public class AGuildFisher extends Script {
-	private int npcLobsterSwordfish = 312, npcShark = 313, fishCaught = 0;
+	private int npcShark = 313, fishCaught = 0;
 	private Area northDock = new Area(new Location(2605, 3426), new Location(2598, 3419));
 	private Area guildBank = new Area(new Location(2587, 3424), new Location(2585, 3420));
 	private Location[] northDockPath = { new Location(2586, 3422), new Location(2591, 3420), new Location(2596, 3420), new Location(2599, 3422) };
